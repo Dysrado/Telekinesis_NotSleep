@@ -35,7 +35,9 @@ private:
 	void Throw();
 
 	//UPROPERTY(EditAnywhere) AActor* Offset;
-	USkeletalMesh* mesh;
+	USkeletalMeshComponent* mesh;
+	TArray<USkeletalMeshComponent*> meshList;
+	TArray<AActor*> actorList;
 	UPROPERTY(EditAnywhere) AActor* offset;
 		
 };

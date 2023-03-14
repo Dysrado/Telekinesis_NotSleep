@@ -24,7 +24,20 @@ UGrabBehaviour::UGrabBehaviour()
 void UGrabBehaviour::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//GetOwner()->GetAttachedActors(actorList);
+	GetOwner()->GetAllChildActors(actorList);
+	GetOwner()->GetComponents<USkeletalMeshComponent>(meshList);
+	if (meshList.Num() > 0)
+	{
+		
+		UE_LOG(LogTemp,Display, TEXT("MESH OFFSET"));
+	}
+	if (actorList.Num() > 0)
+	{
+		
+		UE_LOG(LogTemp,Display, TEXT("ACTOR OFFSET"));
+	}
+	mesh = meshList[0];
 	
 	// ...
 	UInputComponent* inputComponent = this->GetOwner()->FindComponentByClass<UInputComponent>();
@@ -41,7 +54,7 @@ void UGrabBehaviour::BeginPlay()
 void UGrabBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	;FName name = "Offset Socket";
+	;FName name = "offset_socket";
 	// ...
 	if (hasGrabbed) {
 		FVector location;
@@ -53,7 +66,7 @@ void UGrabBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (grabbedActor != nullptr) {
 
 			if (physicsHandle != nullptr) {
-				physicsHandle->SetTargetLocation(lineTracedEnd);
+				physicsHandle->SetTargetLocation(mesh->GetSocketLocation(name));
 			}
 			else {
 				FVector grabbedLoc = grabbedActor->GetActorLocation();
