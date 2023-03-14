@@ -53,7 +53,7 @@ void UGrabBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (grabbedActor != nullptr) {
 
 			if (physicsHandle != nullptr) {
-				physicsHandle->SetTargetLocation();
+				physicsHandle->SetTargetLocation(lineTracedEnd);
 			}
 			else {
 				FVector grabbedLoc = grabbedActor->GetActorLocation();
