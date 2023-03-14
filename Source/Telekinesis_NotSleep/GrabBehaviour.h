@@ -27,6 +27,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere) float REACH = 600;
 	UPROPERTY(EditAnywhere) float GrabDelay = 0.3f;
+	UPROPERTY(EditAnywhere) float ThrowStrength = 10.0f;
 	AActor* grabbedActor = NULL;
 	bool hasGrabbed = false;
 	UPrimitiveComponent* primitiveComp;

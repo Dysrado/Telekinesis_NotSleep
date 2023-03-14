@@ -156,6 +156,31 @@ void UGrabBehaviour::Release()
 
 void UGrabBehaviour::Throw()
 {
+	if (primitiveComp != nullptr) {
+		FVector location;
+		FRotator rotation;
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(out location, out rotation);
+		FVector lineTracedEnd = location + rotation.Vector() * REACH;
+		FVector lineTracedLoc = location + rotation.Vector() * REACH;
+
+		DrawDebugLine(GetWorld(), location, lineTracedEnd, FColor::Blue, false, 1.0f, 0, 5.0f);
+
+		FHitResult hit;
+		FCollisionQueryParams traceParams(FName(TEXT("traceQuery")), false, GetOwner()); // parameters for the collisions
+		FCollisionObjectQueryParams objectTypeParams(ECollisionChannel::ECC_PhysicsBody); // Objects you want to get hit, ECC_PhysicsBody = all physics objects
+		GetWorld()->LineTraceSingleByObjectType(hit, location, lineTracedEnd, objectTypeParams, traceParams);
+
+		this->hasGrabbed = true;
+		CanGrab = true;
+
+		primitiveComp->AddImpulse((lineTracedEnd - grabbedActor->GetActorLocation()) * ThrowStrength);
+		physicsHandle->ReleaseComponent();
+		UE_LOG(LogTemp, Display, TEXT("Thrown"));
+	}
+	else {
+		UE_LOG(LogTemp, Display, TEXT("Null Throw"));
+
+	}
 	
 }
 
