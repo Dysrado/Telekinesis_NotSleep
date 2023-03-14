@@ -26,6 +26,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	UPROPERTY(EditAnywhere) float REACH = 600;
+	UPROPERTY(EditAnywhere) float GrabDelay = 0.3f;
 	AActor* grabbedActor = NULL;
 	bool hasGrabbed = false;
 	UPrimitiveComponent* primitiveComp;
@@ -39,5 +40,7 @@ private:
 	TArray<USkeletalMeshComponent*> meshList;
 	TArray<AActor*> actorList;
 	UPROPERTY(EditAnywhere) AActor* offset;
+	float GrabDelayTime;
+	bool CanGrab = false;
 		
 };

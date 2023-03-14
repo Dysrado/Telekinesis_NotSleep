@@ -46,7 +46,7 @@ void UGrabBehaviour::BeginPlay()
 		inputComponent->BindAction("Release", EInputEvent::IE_Pressed, this, &UGrabBehaviour::Release);
 		inputComponent->BindAction("Throw", EInputEvent::IE_Pressed, this, &UGrabBehaviour::Throw);
 	}
-	
+	GrabDelayTime = GrabDelay;
 }
 
 
@@ -66,7 +66,21 @@ void UGrabBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (grabbedActor != nullptr) {
 
 			if (physicsHandle != nullptr) {
-				physicsHandle->SetTargetLocation(mesh->GetSocketLocation(name));
+				
+				if (CanGrab) {
+					physicsHandle->SetTargetLocation(mesh->GetSocketLocation(name));
+				}
+				else {
+					if (GrabDelayTime <= 0.0f) {
+						GrabDelayTime = GrabDelay;
+						CanGrab = true;
+					}
+					else {
+						GrabDelayTime -= DeltaTime;
+						physicsHandle->SetTargetLocation(lineTracedEnd + FVector(0,0,100));
+
+					}
+				}
 			}
 			else {
 				FVector grabbedLoc = grabbedActor->GetActorLocation();
@@ -104,7 +118,7 @@ void UGrabBehaviour::Grab()
 		}
 	
 	}
-
+	CanGrab = false;
 }
 
 void UGrabBehaviour::Release()
