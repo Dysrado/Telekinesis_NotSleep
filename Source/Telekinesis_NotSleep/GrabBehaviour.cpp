@@ -3,6 +3,7 @@
 
 #include "GrabBehaviour.h"
 #include "GameFramework/PlayerController.h"
+#include "EngineUtils.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -54,7 +55,6 @@ void UGrabBehaviour::BeginPlay()
 void UGrabBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	;FName name = "offset_socket";
 	// ...
 	if (hasGrabbed) {
 		FVector location;
@@ -118,6 +118,28 @@ void UGrabBehaviour::Grab()
 		}
 	
 	}
+	else
+	{
+		//UE_LOG(LogTemp, Display, TEXT("MISSED!"));
+		grabbedActor = GrabNearestPhysicsObject();
+		this->hasGrabbed = true;
+
+		
+		primitiveComp = grabbedActor->FindComponentByClass<UPrimitiveComponent>();
+		if (primitiveComp != nullptr)
+		{
+			this->physicsHandle = this->grabbedActor->FindComponentByClass<UPhysicsHandleComponent>();
+			if (this->physicsHandle != NULL) {
+				//lineTracedEnd = location + rotation.Vector();
+				this->physicsHandle->GrabComponentAtLocation(this->primitiveComp, EName::None, grabbedActor->GetActorLocation());
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("Null Error"));
+		}
+		
+	}
 	CanGrab = false;
 }
 
@@ -135,5 +157,35 @@ void UGrabBehaviour::Release()
 void UGrabBehaviour::Throw()
 {
 	
+}
+
+AActor* UGrabBehaviour::GrabNearestPhysicsObject()
+{
+	UWorld* world = GetWorld();
+	AActor* closestActor = NULL;
+	float closestDistance = 10000.0f;
+
+	for (TActorIterator<AActor> It(world, AActor::StaticClass()); It; ++It)
+	{
+		AActor* actor = *It;
+		if (actor != NULL)
+		{
+			//Targets.Add(actor);
+			//UE_LOG(LogTemp, Warning, TEXT("Added Target"));
+			physicsHandle = actor->FindComponentByClass<UPhysicsHandleComponent>();
+			if (this->physicsHandle != NULL) {
+				float distance = (GetOwner()->GetActorLocation() - actor->GetActorLocation()).Size();
+				UE_LOG(LogTemp, Display, TEXT("Distance! %f"), distance);
+				if (distance < closestDistance)
+				{
+					closestDistance = distance;
+					closestActor = actor;
+				}
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("Closest Distance! %f"), closestDistance);
+	return closestActor;
 }
 

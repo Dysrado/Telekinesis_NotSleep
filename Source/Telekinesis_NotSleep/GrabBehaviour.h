@@ -8,12 +8,12 @@
 #include "GrabBehaviour.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TELEKINESIS_NOTSLEEP_API UGrabBehaviour : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UGrabBehaviour();
 
@@ -21,7 +21,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
@@ -34,6 +34,7 @@ private:
 	void Grab();
 	void Release();
 	void Throw();
+	AActor* GrabNearestPhysicsObject();
 
 	//UPROPERTY(EditAnywhere) AActor* Offset;
 	USkeletalMeshComponent* mesh;
@@ -42,5 +43,5 @@ private:
 	UPROPERTY(EditAnywhere) AActor* offset;
 	float GrabDelayTime;
 	bool CanGrab = false;
-		
+	FName name = "offset_socket";
 };
